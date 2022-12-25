@@ -114,7 +114,8 @@ def pose_nms(bboxes, bbox_scores, pose_preds, pose_scores):
         final_result.append({
             'keypoints': merge_pose - 0.3,
             'kp_score': merge_score,
-            'proposal_score': torch.mean(merge_score) + bbox_scores_pick[j] + 1.25 * max(merge_score)
+            'proposal_score': torch.mean(merge_score) + bbox_scores_pick[j] + 1.25 * max(merge_score),
+            'boxes': bboxes
         })
 
     return final_result
@@ -301,12 +302,17 @@ def write_json(all_results, outputpath, for_eval=False):
             kp_preds = human['keypoints']
             kp_scores = human['kp_score']
             pro_scores = human['proposal_score']
+            box = human['boxes']
             for n in range(kp_scores.shape[0]):
                 keypoints.append(float(kp_preds[n, 0]))
                 keypoints.append(float(kp_preds[n, 1]))
                 keypoints.append(float(kp_scores[n]))
             result['keypoints'] = keypoints
             result['score'] = float(pro_scores)
+            result['boxes'] = box.numpy().tolist()
+            """
+            这里是检测手臂呈直角的位置
+            """
 
             if form == 'cmu': # the form of CMU-Pose
                 if result['image_id'] not in json_results_cmu.keys():

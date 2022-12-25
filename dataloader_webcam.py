@@ -414,7 +414,7 @@ class DataWriter:
                     result = pose_nms(boxes, scores, preds_img, preds_scores)
                     result = {
                         'imgname': im_name,
-                        'result': result
+                        'result': result,
                     }
                     self.final_result.append(result)
                     if opt.save_img or opt.save_video or opt.vis:
